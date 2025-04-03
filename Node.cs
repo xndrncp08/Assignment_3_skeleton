@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Assignment_3_skeleton
 {
+    [Serializable]
     public class Node
     {
         private object data;
@@ -14,7 +15,7 @@ namespace Assignment_3_skeleton
         public object Data { get => data; set => data = value; }
         public Node Next { get => next; set => next = value; }
 
-        public Node(object data) 
+        public Node(object data)
         {
             this.Data = data;
             this.next = null;
