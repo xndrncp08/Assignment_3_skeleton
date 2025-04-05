@@ -4,60 +4,46 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Assignment_3_skeleton
+namespace Utility
 {
-    public interface LinkedListADT
+    public interface ILinkedListADT
     {
-        //Checks if the list is empty.
-	    //return True if it is empty.
+        // Checks if the list is empty.
         bool IsEmpty();
 
-        //Clears the list.
+        // Clears the list.
         void Clear();
 
-        //Adds to the end of the list.
-        //Object data to append.
-        void Append(Object data);
+        // Adds an item to the end of the list.
+        void Append(object data);
 
-        //Prepends (adds to beginning) data to the list.
-        //parameter Object Data to store inside element.
-        void Prepend(Object data);
+        // Adds an item to the beginning of the list.
+        void Prepend(object data);
 
-        //Adds a new element at a specific position.
-        //parameter data Data that element is to contain.
-        //parameter index Index to add new element at.
-        //throws exception IndexOutOfRangeException Thrown if index is negative or past the size of the list.
-        void Insert(Object data, int index);
+        // Inserts an item at a specific index.
+        // Throws IndexOutOfRangeException if the index is out of bounds.
+        void Insert(object data, int index);
 
-        //Replaces the data  at index.
-        //parameter data Data to replace.
-        //parameter index Index of element to replace.
-        //throws IndexOutOfRangeException Thrown if index is negative or larger than size - 1 of list.
-        void Replace(Object data, int index);
+        // Replaces the data at the specified index.
+        // Throws IndexOutOfRangeException if the index is out of bounds.
+        void Replace(object data, int index);
 
-        //Gets the number of elements in the list.
-        //return Size of list (0 meaning empty)
+        // Returns the number of elements in the list.
         int Size();
 
-        //Removes element at index from list, reducing the size.
-        //parameter index Index of element to remove.
-        //throws exception IndexOutOfBoundsException Thrown if index is negative or past the size - 1.
+        // Removes an item at a specific index.
+        // Throws IndexOutOfRangeException if the index is out of bounds.
         void Delete(int index);
 
-        //Gets the data at the specified index.
-        //parameter index Index of element to get.
-        //return Data in element or null if it was not found.
-        //throws exception IndexOutOfRangeException Thrown if index is negative or larger than size - 1 of the list.
-        Object Retrieve(int index);
+        // Retrieves the data at the specified index.
+        // Throws IndexOutOfRangeException if the index is out of bounds.
+        object Retrieve(int index);
 
-        //Gets the first index of element containing data.
-        //parameter data Data object to find the first index of.
-        //return First of index of element with matching data or -1 if not found.
-        int IndexOf(Object data);
+        // Gets the first index of an element containing the specified data.
+        // Returns -1 if the data is not found.
+        int IndexOf(object data);
 
-        //Go through elements and check if we have one with data.
-        //parameter data Data object to search for.
-        //return True if element exists with value.
-        bool Contains(Object data);
+        // Checks if the list contains an element with the specified data.
+        bool Contains(object data);
     }
 }

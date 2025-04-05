@@ -4,26 +4,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Assignment_3_skeleton
+namespace Ultility
 {
     public class Node
     {
-        private object data;
-        private Node next;
+        public object Data { get; set; }
+        public Node Next { get; set; }
 
-        public object Data { get => data; set => data = value; }
-        public Node Next { get => next; set => next = value; }
-
-        public Node(object data) 
+        public Node(object data)
         {
-            this.Data = data;
-            this.next = null;
+            Data = data;
+            Next = null;
         }
 
         public Node(object data, Node next)
         {
-            this.Data = data;
-            this.Next = next;
+            Data = data;
+            Next = next;
         }
     }
 }

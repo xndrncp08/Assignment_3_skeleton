@@ -5,312 +5,127 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Assignment_3_skeleton
+using Ultility;
+
+namespace Utility
 {
-    public class SLL : LinkedListADT
+    public class SLL : ILinkedListADT
     {
         private Node head;
         private Node tail;
         private int listSize;
 
-        public Node Head { get => head; set => head = value; }
-        public Node Tail { get => tail; set => tail = value; }
-        public int ListSize { get => listSize; set => listSize = value; }
-
-        public void Append(object data)
-        {
-            listSize++;
-            if (FixListNull(data) == true)
-            {
-                return;
-            }
-            tail.Next = new Node(data);
-            tail = tail.Next;
-        }
-
-        public void Clear()
+        public SLL()
         {
             head = null;
             tail = null;
-            Console.WriteLine("List cleared");
+            listSize = 0;
         }
 
-        public bool Contains(object data)
+        public bool IsEmpty() => listSize == 0;
+
+        public void Clear()
         {
-            Node current = head; //initialize "current"
-            while (current != null)
-            {
-                if (current.Data == data)
-                {
-                    return true; //data found
-                }
-                current = current.Next;
-            }
-            return false; //data not found
-            //throw new NotImplementedException();
+            head = tail = null;
+            listSize = 0;
         }
 
-        public void Delete(int targetIndex)
+        public int Size() => listSize;
+
+        public void Append(object data)
         {
-            if (CheckListNull() is true)
+            Node newNode = new Node(data);
+            if (IsEmpty())
             {
-                return;
+                head = tail = newNode;
             }
-            int index = 0;
-            for (Node tempNode = head; tempNode != null; tempNode = tempNode.Next)
+            else
             {
-                if (targetIndex == 0)
-                {
-                    head = head.Next;
-                    return;
-                }
-
-                if (index + 1 == targetIndex)
-                {
-                    if (tempNode.Next == tail)
-                    {
-                        tail = tempNode;
-                        tail.Next = null;
-                        return;
-                    }
-                    else
-                    {
-                        tempNode.Next = tempNode.Next.Next;
-                        return;
-                    }
-                }
-                index++;
+                tail.Next = newNode;
+                tail = newNode;
             }
-        }
-
-        public int IndexOf(object target)
-        {
-            if (CheckListNull() is true)
-            {
-                return -1;
-            }
-
-            int index = 0;
-            for (Node tempNode = head; tempNode != null; tempNode = tempNode.Next)
-            {
-                if (tempNode.Data.ToString() == target.ToString())
-                {
-                    return index;
-                }
-                index++;
-            }
-            return -1;
-        }
-
-        public void Insert(object data, int targetIndex)
-        {
             listSize++;
-            if (targetIndex == 0)
-            {
-                if (CheckListNull() is true)
-                {
-                    head = tail = new Node(data);
-                }
-                else
-                { // no work
-                    Node temp = head;
-                    head = new Node(data, temp);
-                }
-            }
-            if (CheckListNull() is true && targetIndex > 0)
-            {
-                Console.WriteLine("Target Index Out of Bounds For Linked List");
-            }
-            int index = 0;
-            for (Node tempNode = head; tempNode != null; tempNode = tempNode.Next)
-            {
-                if (index + 1 == targetIndex)
-                {
-                    if (tempNode.Next == tail)
-                    {
-                        Console.WriteLine("Here");
-                        Append(tail.Data);
-                        tempNode.Next = new Node(data, tail);
-                    }
-                    else
-                    { // in between
-                        Console.WriteLine("IN ELSE");
-                        Node temp = tempNode.Next;
-                        tempNode.Next = new Node(data, temp);
-                    }
-                }
-                index++;
-            }
-        }
-
-        public bool IsEmpty()
-        {
-            if (head is null && tail is null)
-            {
-                Console.WriteLine("List is Empty.");
-                return true;
-            }
-            return false;
         }
 
         public void Prepend(object data)
         {
+            Node newNode = new Node(data, head);
+            head = newNode;
+            if (tail == null) tail = head;
             listSize++;
-            if (FixListNull(data) == true)
-            {
-                return;
-            }
-            Node new_node = new Node(data);
-            new_node.Next = head;
-            head = new_node;
-
-            //throw new IndexOutOfRangeException();
         }
 
-        public void Replace(object data, int targetIndex)
+        public void Insert(object data, int index)
         {
-            if (CheckListNull() is true)
-            {
-                return;
-            }
-            int index = 0;
-            for (Node tempNode = head; tempNode != null; tempNode = tempNode.Next)
-            {
-                if (targetIndex == 0)
-                {
-                    head = new Node(data, head.Next);
-                    return;
-                }
+            if (index < 0 || index > listSize)
+                throw new IndexOutOfRangeException("Invalid index.");
 
-                if (index + 1 == targetIndex)
-                {
-                    if (tempNode == tail)
-                    {
-                        tail = new Node(data);
-                        return;
-                    }
-                    else
-                    {
-                        tempNode.Next = new Node(data, tempNode.Next.Next);
-                        tail = tempNode.Next;
-                        return;
-                    }
-                }
-                index++;
-            }
+            if (index == 0) { Prepend(data); return; }
+            if (index == listSize) { Append(data); return; }
+
+            Node prev = GetNode(index - 1);
+            Node newNode = new Node(data, prev.Next);
+            prev.Next = newNode;
+            listSize++;
         }
 
-        public object Retrieve(int targetIndex)
+        public void Replace(object data, int index)
         {
-            if (CheckListNull() is true)
-            {
-                return null;
-            }
-            if(targetIndex == 0)
-            {
-                return head.Data;
-            }
+            if (index < 0 || index >= listSize)
+                throw new IndexOutOfRangeException("Invalid index.");
+
+            GetNode(index).Data = data;
+        }
+
+        public object Retrieve(int index)
+        {
+            if (index < 0 || index >= listSize)
+                throw new IndexOutOfRangeException("Invalid index.");
+
+            return GetNode(index).Data;
+        }
+
+        public int IndexOf(object data)
+        {
             int index = 0;
-            for(Node tempNode = head; tempNode != null; tempNode = tempNode.Next)
+            for (Node current = head; current != null; current = current.Next, index++)
             {
-                if(index+1 == targetIndex)
-                {
-                    if (tempNode.Next == tail)
-                    {
-                        return tail.Data;
-                    }
-                    else
-                    {
-                        return tempNode.Next.Data;
-                    }
-                }
-                index++;
+                if (current.Data.Equals(data))
+                    return index;
             }
             return -1;
         }
 
-        public int Size()
+        public bool Contains(object data) => IndexOf(data) != -1;
+
+        public void Delete(int index)
         {
-            if (head is null)
+            if (index < 0 || index >= listSize)
+                throw new IndexOutOfRangeException("Invalid index.");
+
+            if (index == 0)
             {
-                return 0;
+                head = head.Next;
+                if (head == null) tail = null;
             }
-            Console.Write(listSize);
-            return listSize;
+            else
+            {
+                Node prev = GetNode(index - 1);
+                prev.Next = prev.Next.Next;
+                if (prev.Next == null) tail = prev;
+            }
+            listSize--;
         }
 
-        // EXTRA METHODS
-
-
-        // print DATA of all Nodes in the Linked List
-        public void PrintList()
+        private Node GetNode(int index)
         {
-            if (CheckListNull() is true)
+            Node current = head;
+            for (int i = 0; i < index; i++)
             {
-                return;
+                current = current.Next;
             }
-            for (Node tempNode = head; tempNode != null; tempNode = tempNode.Next)
-            {
-                Console.Write(tempNode.Data.ToString() + "  ");
-            }
-            Console.WriteLine();
+            return current;
         }
-
-        // Return the head as NODE if list not empty
-        public Node GetHead()
-        {
-            if (CheckListNull() is true)
-            {
-                return null;
-            }
-            return head;
-        }
-
-        // return the tail as NODE if list not empty
-        public Node GetTail()
-        {
-            if (CheckListNull() is true)
-            {
-                return null;
-            }
-            return tail;
-        }
-
-        // return DATA of all Nodes, print Data of head and tail as well... helps to verify all values
-        public void PrintData()
-        {
-            if (CheckListNull() is true)
-            {
-                return;
-            }
-            PrintList();
-            Console.WriteLine("\nHEAD: " + GetHead().Data);
-            Console.WriteLine("TAIL: " + GetTail().Data + "\n\n");
-        }
-
-        // return "List was Null" if list is empty.
-        public bool CheckListNull()
-        {
-            if (head is null && tail is null)
-            {
-                Console.WriteLine("List was NULL\n\n");
-                return true;
-            }
-            return false;
-        }
-
-        // When using a method that ads a Node to the list, if the list is empty run  this method
-        // this is useful as there are many methods that add Nodes to the list... this can therefore be used universally
-        public bool FixListNull(object data)
-        {
-            if (head is null && tail is null)
-            {
-                head = tail = new Node(data);
-                return true;
-            }
-            return false;
-        }
-
-
     }
 }
+
